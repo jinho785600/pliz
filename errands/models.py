@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-from accounts.models import User
 
 # Create your models here.
 class Errand(models.Model):
@@ -9,7 +8,7 @@ class Errand(models.Model):
         ("HOMEWORK","Homework"),
         ("ETC","Etc"),
     )
-    owner = models.ForeignKey(User, related_name='errands', null=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='errands', null=True, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=100, blank=True, default='Blank Title')
     text = models.TextField()
@@ -20,3 +19,9 @@ class Errand(models.Model):
             default="DELIVERY" )
     class Meta:
         ordering = ('-created',)
+
+
+class Candidate(models.Model):
+    errand = models.ForeignKey(Errand, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
